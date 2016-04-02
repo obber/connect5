@@ -13,7 +13,7 @@ var Board = (function() {
   // ----------------------------
 
   function init() {
-    // create null slots in storag to kick things off
+    // create null slots in storage to kick things off
     generateStorage();
   }
 
@@ -34,9 +34,7 @@ var Board = (function() {
       console.error('not a legit id!');
     } else if (storage[id]) {
       console.error('spot is already taken!');
-    } 
-
-    else {
+    } else {
       var marble = new Marble(id, color);
       storage[id] = marble;
 
@@ -48,7 +46,7 @@ var Board = (function() {
         }
       });
 
-      checkWin(marble);
+      console.log(checkWin(marble));
     }
   }
 
@@ -79,7 +77,8 @@ var Board = (function() {
 
   function checkWin(marble) {
     var connections = marble.connections;
-    var result = false;
+    var lengths = [];
+    var result;
 
     connections.forEach(function(next, direction) {
       var count = 0;
@@ -88,18 +87,21 @@ var Board = (function() {
         if (next && next.color === marble.color) {
           next = next.connections[direction];
           count++;
-          if (count === 4) {
-            result = true;
-            return;
-          }
         } else {
           return;
         }
       }
+
+      lengths.push(count);
     });
 
-    console.log('winning piece? ', result);
-    return result;
+    for (var i = 0; i < 4; i++) {
+      if (1 + lengths[i] + lengths[i+4] >= 5) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   function view() {
@@ -117,11 +119,3 @@ var Board = (function() {
   }
 
 })(); // end
-
-Board.init();
-Board.addMarble('04', 'black');
-Board.addMarble('11', 'white');
-Board.addMarble('02', 'black');
-Board.addMarble('03', 'black');
-Board.addMarble('01', 'black');
-Board.addMarble('00', 'black'); // winning piece
