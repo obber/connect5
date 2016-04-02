@@ -5,20 +5,27 @@
   <title>Connect 5</title>
 
   <link rel="stylesheet" href="dist/style.css">
-</head>
-<body>
+
+  <!-- Angular -->
+  <script src="bower_components/angular/angular.min.js"></script>
   
   <!-- Authored JS -->
   <script src="dist/built.js"></script>
+</head>
+<body ng-app="app">
+
+  <div ng-controller="Board">
+    <div class="view-state" ng-click="view()"></div>
+    <div class="board container">
+      <div ng-repeat="item in board" class="space" id="{{item.id}}">
+        <div ng-class="item.taken && 'taken'" ng-click="add(item)" ng-disabled="item.taken">{{item.id}}</div>
+      </div>
+    </div>
+  </div>
+  
 
   <script>
-    // initialize board
-    Board.init();
-    Board.addMarble('00', "black");
-    Board.addMarble('03', "black");
-    Board.addMarble('04', "black");
-    Board.addMarble('01', "black");
-    Board.addMarble('02', "black");
+
   </script>
 </body>
 </html>
