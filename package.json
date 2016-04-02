@@ -1,5 +1,5 @@
 {
-  "name": "mongotest",
+  "name": "c5",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,13 +8,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/obber/mongotest.git"
+    "url": "git+https://github.com/obber/connect5.git"
   },
+  "bugs": {
+    "url": "https://github.com/obber/connect5/issues"
+  },
+  "homepage": "https://github.com/obber/connect5#readme",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/obber/mongotest/issues"
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0"
   },
-  "homepage": "https://github.com/obber/mongotest#readme"
+  "dependencies": {
+    "grunt": "^0.4.5"
+  }
 }
