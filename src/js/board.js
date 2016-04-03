@@ -7,23 +7,25 @@
 
   app.controller('Board', function($scope, State) {
 
-    var turn = true;
-
-    console.log('in controller');
-
     $scope.board = State.getSlots();
+    $scope.gameover = false;
+    $scope.winner;
+    $scope.getTurn = State.getTurn
 
     $scope.add = function(item) {
-      console.log(item.id);
-
       if (!item.taken) {
-        color = turn ? "black" : "white"
-        State.addMarble(item.id, color);
-        
+        item.color = State.getTurn() ? "black" : "white";
         item.taken = true;
-        turn = !turn;
+
+        // check for winner
+        if (State.addMarble(item.id, item.color)) {
+          $scope.gameover = true;
+          $scope.winner = item.color
+        }
       }
     }
+
+    // ---- debugging ------
 
     $scope.view = function() {
       console.log(State.viewStorage());

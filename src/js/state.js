@@ -6,12 +6,14 @@
   // Board State
 
   app.factory('State', function() {
-    var storage = {};
-    var slots = [];
+    var storage = {}; // stores our nodes id:node (key:value) format
+    var slots = []; // stores our nodes in array of objects: { id: id, taken: true/false, color: black/white }
+    var turn = true;
 
     init();
     
     return {
+      getTurn: getTurn,
       get: get,
       viewStorage: viewStorage,
       getSlots: getSlots,
@@ -38,15 +40,20 @@
     function addMarble(id, color) {
       if (id === undefined && color === undefined) {
         console.error('id & color needs to be defined to create a Marble!');
+
       } else if ( !(/[0-8][0-8]/.test(id)) ) {
         console.error('not a legit id!');
+
       } else if (storage[id]) {
         console.error('spot is already taken!');
+
       } else {
+        // toggle turn
+        turn = !turn;
         var marble = new Marble(id, color);
         storage[id] = marble;
 
-        // iterate through marble connections and add itself as a connectee
+        // iterate through marble's connections and add itself as a connectee
         marble.connections.forEach(function(target, i) {
           if (target) {
             var p = i < 4 ? i + 4 : i - 4;
@@ -54,8 +61,9 @@
           }
         });
 
-        console.log(checkWin(marble));
       }
+
+      return checkWin(marble);
     }
 
     function findConnections(id) {
@@ -96,7 +104,7 @@
             next = next.connections[direction];
             count++;
           } else {
-            return;
+            break;
           }
         }
 
@@ -120,6 +128,10 @@
       return slots;
     }
 
+    function getTurn() {
+      return turn;
+    }
+
     function generateStorage() {
       for (var i = 0; i < 9; i++) {
         for (var j = 0; j < 9; j++) {
@@ -132,7 +144,8 @@
       for (var id in storage) {
         slots.push({
           id: id,
-          taken: false
+          taken: false,
+          hover: false
         });
       }
 

@@ -15,17 +15,29 @@
 <body ng-app="app">
 
   <div ng-controller="Board">
-    <div class="view-state" ng-click="view()"></div>
+    <!-- <div class="view-state" ng-click="view()"></div> -->
     <div class="board container">
-      <div ng-repeat="item in board" class="space" id="{{item.id}}">
-        <div ng-class="item.taken && 'taken'" ng-click="add(item)" ng-disabled="item.taken">{{item.id}}</div>
+      <div class="gameover" ng-show="gameover">
+        <h1>Game over! {{winner}} wins!</h1>
+      </div>
+
+      <div ng-repeat="item in board"
+        ng-mouseover="item.hover = true"
+        ng-mouseleave="item.hover = false"
+        class="space"
+        id="{{item.id}}"
+        >
+
+        <div class="space-inner" ng-class="{
+          taken : item.taken,
+          black : item.color === 'black',
+          white : item.color === 'white',
+          hoverB : !item.color && item.hover && getTurn(),
+          hoverW : !item.color && item.hover && !getTurn()
+        }" ng-click="add(item)" ng-disabled="item.taken"></div>
       </div>
     </div>
   </div>
-  
 
-  <script>
-
-  </script>
 </body>
 </html>
