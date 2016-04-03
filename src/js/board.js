@@ -5,7 +5,9 @@
   // ----------------------------
   // Board Controller
 
-  app.controller('Board', function($scope, State) {
+  app.controller('Board', BoardController);
+
+  function BoardController($scope, State) {
 
     $scope.board = State.getSlots();
     $scope.gameover = false;
@@ -25,12 +27,6 @@
       }
     }
 
-    // ---- debugging ------
-
-    $scope.view = function() {
-      console.log(State.viewStorage());
-    }
-
-  });
+  }; // Controller End
 
 })();

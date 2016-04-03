@@ -5,7 +5,10 @@
   // ----------------------------
   // Board State
 
-  app.factory('State', function() {
+  app.factory('State', State);
+
+  function State() {
+
     var storage = {}; // stores our nodes id:node (key:value) format
     var slots = []; // stores our nodes in array of objects: { id: id, taken: true/false, color: black/white }
     var turn = true;
@@ -158,6 +161,6 @@
       });
     }
 
-  }) // factory end
+  } // factory end
 
-})(); // end
+})();
