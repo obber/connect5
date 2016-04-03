@@ -7,13 +7,11 @@
 
   app.factory('State', State);
 
-  function State() {
+  function State(IDHelper) {
 
-    var storage = {}; // stores our nodes id:node (key:value) format
-    var slots = []; // stores our nodes in array of objects: { id: id, taken: true/false, color: black/white }
+    var storage = IDHelper.generateIds(); // stores our nodes id:node (key:value) format
+    var slots = generateSlots(); // stores our nodes in array of objects: { id: id, taken: true/false, color: black/white }
     var turn = true;
-
-    init();
     
     return {
       getTurn: getTurn,
@@ -24,11 +22,6 @@
     }
 
     // ----------------------------
-
-    function init() {
-      // create null slots in storage to kick things off
-      generateStorage();
-    }
 
     function get(id) {
       return storage[id];
@@ -54,11 +47,11 @@
 
     function addMarble(id, color) {
       // addMarble returns true if the added marble was a winning piece.
-      
+
       if (id === undefined && color === undefined) {
         console.error('id & color needs to be defined to create a Marble!');
 
-      } else if ( !(/[0-8][0-8]/.test(id)) ) {
+      } else if ( !(/[A-S][A-S]/.test(id)) ) {
         console.error('not a legit id!');
 
       } else if (storage[id]) {
@@ -84,34 +77,18 @@
     }
 
     function findConnections(id) {
-      var r = Number(id.charAt(0));
-      var c = Number(id.charAt(1));
-      var rP = r + 1;
-      var rN = r - 1;
-      var cP = c + 1;
-      var cN = c - 1;
-      var connectionIds = [
-        '' + r  + cN,
-        '' + rP + cN,
-        '' + rP + c,
-        '' + rP + cP,
-        '' + r  + cP,
-        '' + rN + cP,
-        '' + rN + c,
-        '' + rN + cN
-      ]
-
-      connections = connectionIds.map(function(id) {
-        return storage[id] || null;
-      });
-
-      return connections;
+      return IDHelper.connectionIds(id)
+        .map(function(id) {
+          return storage[id] || null;
+        });
     }
 
     function checkWin(marble) {
       var connections = marble.connections;
       var lengths = [];
       var result;
+
+      console.log('initial connections = ', connections);
 
       connections.forEach(function(next, direction) {
         var count = 0;
@@ -128,6 +105,8 @@
         lengths.push(count);
       });
 
+      console.log('lengths = ', lengths);
+
       for (var i = 0; i < 4; i++) {
         if (1 + lengths[i] + lengths[i+4] >= 5) {
           return true;
@@ -137,14 +116,8 @@
       return false;
     }
 
-    function generateStorage() {
-      for (var i = 0; i < 9; i++) {
-        for (var j = 0; j < 9; j++) {
-          var row = i.toString();
-          var column = j;
-          storage[row + column] = null;
-        }
-      }
+    function generateSlots() {
+      var slots = [];
 
       for (var id in storage) {
         slots.push({
@@ -155,12 +128,15 @@
       }
 
       slots.sort(function(a,b) {
-        if (a.id.charAt(0) === b.id.charAt(0)) {
-          return Number(a.id.charAt(1)) - Number(b.id.charAt(1));
+        num = IDHelper.letterToNum;
+        if (a.id.charAt(1) === b.id.charAt(1)) {
+          return num(a.id.charAt(0)) - num(b.id.charAt(0));
         } else {
-          return Number(a.id.charAt(0)) - Number(b.id.charAt(0));
+          return num(a.id.charAt(1)) - num(b.id.charAt(1));
         }
       });
+
+      return slots;
     }
 
   } // factory end
