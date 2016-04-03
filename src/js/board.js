@@ -15,7 +15,6 @@
     $scope.getTurn = State.getTurn
 
     $scope.add = function(item) {
-      console.log('item ID to be added =', item.id);
       if (!item.taken) {
         item.color = State.getTurn() ? "black" : "white";
         item.taken = true;

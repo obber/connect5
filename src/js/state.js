@@ -10,7 +10,7 @@
   function State(IDHelper) {
 
     var storage = IDHelper.generateIds(); // stores our nodes id:node (key:value) format
-    var slots = generateSlots(); // stores our nodes in array of objects: { id: id, taken: true/false, color: black/white }
+    var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
     var turn = true;
     
     return {
@@ -88,8 +88,6 @@
       var lengths = [];
       var result;
 
-      console.log('initial connections = ', connections);
-
       connections.forEach(function(next, direction) {
         var count = 0;
 
@@ -104,8 +102,6 @@
 
         lengths.push(count);
       });
-
-      console.log('lengths = ', lengths);
 
       for (var i = 0; i < 4; i++) {
         if (1 + lengths[i] + lengths[i+4] >= 5) {
