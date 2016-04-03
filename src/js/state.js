@@ -30,17 +30,31 @@
       generateStorage();
     }
 
+    function get(id) {
+      return storage[id];
+    }
+
+    function viewStorage() {
+      return storage;
+    }
+
+    function getSlots() {
+      return slots;
+    }
+
+    function getTurn() {
+      return turn;
+    }
+
     function Marble(id, color) {
       this.id = id;
       this.color = color;
       this.connections = findConnections(id);
     }
 
-    function get(id) {
-      return storage[id];
-    }
-
     function addMarble(id, color) {
+      // addMarble returns true if the added marble was a winning piece.
+      
       if (id === undefined && color === undefined) {
         console.error('id & color needs to be defined to create a Marble!');
 
@@ -51,9 +65,10 @@
         console.error('spot is already taken!');
 
       } else {
-        // toggle turn
-        turn = !turn;
+
         var marble = new Marble(id, color);
+
+        turn = !turn;
         storage[id] = marble;
 
         // iterate through marble's connections and add itself as a connectee
@@ -63,7 +78,6 @@
             target.connections[p] = marble;
           }
         });
-
       }
 
       return checkWin(marble);
@@ -121,18 +135,6 @@
       }
 
       return false;
-    }
-
-    function viewStorage() {
-      return storage;
-    }
-
-    function getSlots() {
-      return slots;
-    }
-
-    function getTurn() {
-      return turn;
     }
 
     function generateStorage() {
