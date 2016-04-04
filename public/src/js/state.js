@@ -13,6 +13,8 @@
     var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
     var turn = true;
     
+    init();
+
     return {
       getTurn: getTurn,
       get: get,
@@ -22,6 +24,18 @@
     }
 
     // ----------------------------
+
+    function init() {
+      console.log('initializing State and setting up socket listener 3');
+      // listen for newMarble event from socket
+      socket.on('newMarble', function(marble) {
+        console.log('storage[marble.id] is ' + storage[marble.id]);
+        if (storage[marble.id] === null) {
+          console.log('adding to board!');
+          addMarble(marble.id, marble.color, true);
+        }
+      });
+    }
 
     function get(id) {
       return storage[id];
@@ -45,7 +59,7 @@
       this.connections = findConnections(id);
     }
 
-    function addMarble(id, color) {
+    function addMarble(id, color, opponent) {
       // addMarble returns true if the added marble was a winning piece.
 
       if (id === undefined && color === undefined) {
@@ -54,12 +68,17 @@
       } else if ( !(/[A-S][A-S]/.test(id)) ) {
         console.error('not a legit id!');
 
-      } else if (storage[id]) {
+      } else if (typeof(storage[id]) === "object") {
         console.error('spot is already taken!');
 
       } else {
 
         var marble = new Marble(id, color);
+
+        if (opponent === undefined) {
+          console.log('emitting addMarble event from client');
+          socket.emit('addMarble', marble);
+        }
 
         turn = !turn;
         storage[id] = marble;

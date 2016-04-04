@@ -57,12 +57,14 @@
 
     function generateIds() {
       var result = {};
+      var i = 0;
 
       for (var letterOne in dictionary) {
         var id = letterOne;
         for (var letterTwo in dictionary) {
           id += letterTwo;
-          result[id] = null;
+          result[id] = i;
+          i++;
           id = id.charAt(0);
         }
       }

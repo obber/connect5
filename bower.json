@@ -1,0 +1,21 @@
+{
+  "name": "c5",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "Kan Adachi <Kadachi1023@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/obber/connect5",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "socket.io-client": "^1.4.5"
+  }
+}

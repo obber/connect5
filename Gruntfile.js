@@ -1,14 +1,14 @@
 module.exports = function(grunt){
   grunt.initConfig({
     watch: {
-      files: ['**/*'],
+      files: ['public/**/*'],
       tasks: ['concat', 'sass'],
     },
 
     concat: {
       dist: {
-        src: ['src/js/app.js', 'src/js/idHelper.js', 'src/js/state.js', 'src/js/board.js'],
-        dest: 'dist/built.js',
+        src: ['public/src/js/app.js', 'public/src/js/idHelper.js', 'public/src/js/state.js', 'public/src/js/board.js'],
+        dest: 'public/dist/built.js',
       },
     },
 
@@ -18,7 +18,7 @@ module.exports = function(grunt){
           style: 'expanded'
         },
         files: {
-          'dist/style.css': 'src/scss/style.scss'
+          'public/dist/style.css': 'public/src/scss/style.scss'
         }
       }
     }
