@@ -19,7 +19,7 @@
 <body ng-app="app">
 
   <div ng-controller="Board">
-    <!-- <div class="view-state" ng-click="view()"></div> -->
+    <div class="view-state" ng-click="viewSlots()"></div>
     <div class="board container" ng-class="{ blackturn : getTurn(), whiteturn : !getTurn() }">
       <div class="gameover" ng-show="gameover">
         <h1>Game over! {{winner}} wins!</h1>

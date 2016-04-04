@@ -7,32 +7,34 @@
 
   app.factory('State', State);
 
-  function State(IDHelper) {
+  function State(IDHelper, $rootScope) {
 
-    var storage = IDHelper.generateIds(); // stores our nodes id:node (key:value) format
+    var storage = generateStorage(); // stores our nodes id:node (key:value) format
     var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
     var turn = true;
+    var watcher = true;
     
     init();
 
     return {
+      storage: storage,
+      slots: slots,
       getTurn: getTurn,
       get: get,
       viewStorage: viewStorage,
-      getSlots: getSlots,
+      viewSlots: viewSlots,
       addMarble: addMarble
     }
 
     // ----------------------------
 
     function init() {
-      console.log('initializing State and setting up socket listener 3');
+      console.log('initializing State and setting up socket listener 4');
       // listen for newMarble event from socket
       socket.on('newMarble', function(marble) {
-        console.log('storage[marble.id] is ' + storage[marble.id]);
-        if (storage[marble.id] === null) {
-          console.log('adding to board!');
+        if (!storage[marble.id].taken) {
           addMarble(marble.id, marble.color, true);
+          $rootScope.$broadcast('addMarble');
         }
       });
     }
@@ -45,7 +47,7 @@
       return storage;
     }
 
-    function getSlots() {
+    function viewSlots() {
       return slots;
     }
 
@@ -53,10 +55,11 @@
       return turn;
     }
 
-    function Marble(id, color) {
+    function Marble(id) {
       this.id = id;
-      this.color = color;
-      this.connections = findConnections(id);
+      this.color = null;
+      this.taken = false;
+      this.connections = [null, null, null, null, null, null, null, null];
     }
 
     function addMarble(id, color, opponent) {
@@ -68,20 +71,22 @@
       } else if ( !(/[A-S][A-S]/.test(id)) ) {
         console.error('not a legit id!');
 
-      } else if (typeof(storage[id]) === "object") {
+      } else if (storage[id].taken) {
         console.error('spot is already taken!');
 
       } else {
 
-        var marble = new Marble(id, color);
+        var marble = storage[id];
 
-        if (opponent === undefined) {
-          console.log('emitting addMarble event from client');
+        if (!opponent) {
+          console.log('emitting addMarble event from client to pass to opponent');
           socket.emit('addMarble', marble);
         }
 
         turn = !turn;
-        storage[id] = marble;
+        marble.taken = true;
+        marble.color = color;
+        marble.connections = findConnections(id);
 
         // iterate through marble's connections and add itself as a connectee
         marble.connections.forEach(function(target, i) {
@@ -111,7 +116,7 @@
         var count = 0;
 
         while (next) {
-          if (next && next.color === marble.color) {
+          if (next.color === marble.color) {
             next = next.connections[direction];
             count++;
           } else {
@@ -119,7 +124,6 @@
           }
         }
 
-        lengths.push(count);
       });
 
       for (var i = 0; i < 4; i++) {
@@ -131,15 +135,21 @@
       return false;
     }
 
+    function generateStorage() {
+      var result = IDHelper.generateIds();
+
+      for (var id in result) {
+        result[id] = new Marble(id);
+      }
+
+      return result;
+    }
+
     function generateSlots() {
       var slots = [];
 
       for (var id in storage) {
-        slots.push({
-          id: id,
-          taken: false,
-          hover: false
-        });
+        slots.push(storage[id]);
       }
 
       slots.sort(function(a,b) {
