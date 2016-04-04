@@ -44,16 +44,16 @@ body {
   background-color: #2d2d2d;
 }
 
-.hoverB {
+.white {
+  background-color: #efefef;
+}
+
+.blackturn .space-inner:not(.taken):hover {
   background-color: rgba(0,0,0,0.5);
 }
 
-.hoverW {
+.whiteturn .space-inner:not(.taken):hover {
   background-color: rgba(255,255,255,0.5);
-}
-
-.white {
-  background-color: #efefef;
 }
 
 .gameover {

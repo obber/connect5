@@ -74,19 +74,15 @@
       var rootIndex = idToIndex(id);
       var r = rootIndex[0];
       var c = rootIndex[1];
-      var rP = r + 1;
-      var rN = r - 1;
-      var cP = c + 1;
-      var cN = c - 1;
       var connectionIndexes = [
-        [ r , cN ],
-        [ rP, cN ],
-        [ rP, c  ],
-        [ rP, cP ],
-        [ r , cP ],
-        [ rN, cP ],
-        [ rN, c  ],
-        [ rN, cN ]
+        [ r    , c - 1 ],
+        [ r + 1, c - 1 ],
+        [ r + 1, c     ],
+        [ r + 1, c + 1 ],
+        [ r    , c + 1 ],
+        [ r - 1, c + 1 ],
+        [ r - 1, c     ],
+        [ r - 1, c - 1 ]
       ]
 
       return connectionIndexes.map(function(indexes) {
