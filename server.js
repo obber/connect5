@@ -21,7 +21,7 @@ io.on('connection', socketHandler);
 
 // we use http here to accomodate for socket.io
 // @url: http://bit.ly/1N5e3e6
-http.listen(3000);
+http.listen(process.env.PORT || 5000);
 console.log('app listening on port 3000');
 
 // ----------------------------------
