@@ -5,7 +5,7 @@ html {
 }
 
 body {
-  padding: 40px 0;
+  padding: 30px 0 40px 0;
   background-image: url('../images/wood_pattern.png');
   height: 100%;
 }
@@ -20,12 +20,21 @@ body {
   background-color: rgba(0,0,0,0.3);
 }
 
+.title {
+  width: 570px;
+  margin: auto;
+  color: #fff;
+  text-align: center;
+}
+
 .board {
   width: 570px;
   margin: auto;
   position: relative;
   line-height: 0;
   background-image: url('../images/wood_pattern.png');
+  -webkit-box-shadow: 0 0 15px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 0 15px 0 rgba(0,0,0,0.2);
 }
 
 .space {

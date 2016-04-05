@@ -18,6 +18,8 @@
   <script src="dist/built.js"></script>
 </head>
 <body ng-app="app">
+
+  <h1 class="title">Connect 5</h1>
   
   <div class="ui-view-container">
     <div ui-view>
@@ -26,7 +28,7 @@
   </div>
 
   <script>
-    var socket = io.connect('http://localhost:3000');
+    var socket = io.connect('http://127.0.0.1:3000');
   </script>
 
 </body>
