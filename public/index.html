@@ -19,11 +19,12 @@
 <body ng-app="app">
 
   <div ng-controller="Board">
-    <div class="view-state" ng-click="viewSlots()"></div>
     <div class="board container" ng-class="{ blackturn : getTurn(), whiteturn : !getTurn() }">
       <div class="gameover" ng-show="gameover">
         <h1>Game over! {{winner}} wins!</h1>
       </div>
+
+      <p>{{player.color}}</p>
 
       <div ng-repeat="item in board"
         class="space"
@@ -35,7 +36,7 @@
           white : item.color === 'white'
         }" ng-click="add(item)" ng-disabled="item.taken">
         </div>
-
+        
       </div>
     </div>
   </div>

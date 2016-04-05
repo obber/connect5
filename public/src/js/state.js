@@ -12,8 +12,9 @@
     var storage = generateStorage(); // stores our nodes id:node (key:value) format
     var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
     var turn = true;
-    var watcher = true;
-    
+    var winner = null;
+    var player = { color: null };
+
     init();
 
     return {
@@ -23,18 +24,27 @@
       get: get,
       viewStorage: viewStorage,
       viewSlots: viewSlots,
-      addMarble: addMarble
+      addMarble: addMarble,
+      player: player
     }
 
     // ----------------------------
 
     function init() {
+      socket.on('playerColor', function(black) {
+        player.color = black ? 'black' : 'white';
+        console.log(player.color);
+      });
+
       console.log('initializing State and setting up socket listener 4');
       // listen for newMarble event from socket
       socket.on('newMarble', function(marble) {
         if (!storage[marble.id].taken) {
           addMarble(marble.id, marble.color, true);
           $rootScope.$broadcast('addMarble');
+        }
+        if (winner) {
+          $rootScope.$broadcast('gameover', marble);
         }
       });
     }
@@ -63,23 +73,17 @@
     }
 
     function addMarble(id, color, opponent) {
-      // addMarble returns true if the added marble was a winning piece.
-
       if (id === undefined && color === undefined) {
         console.error('id & color needs to be defined to create a Marble!');
-
       } else if ( !(/[A-S][A-S]/.test(id)) ) {
         console.error('not a legit id!');
-
       } else if (storage[id].taken) {
         console.error('spot is already taken!');
-
       } else {
 
         var marble = storage[id];
 
         if (!opponent) {
-          console.log('emitting addMarble event from client to pass to opponent');
           socket.emit('addMarble', marble);
         }
 
@@ -89,21 +93,23 @@
         marble.connections = findConnections(id);
 
         // iterate through marble's connections and add itself as a connectee
-        marble.connections.forEach(function(target, i) {
-          if (target) {
+        marble.connections.forEach(function(targetID, i) {
+          if (storage[targetID]) {
             var p = i < 4 ? i + 4 : i - 4;
-            target.connections[p] = marble;
+            storage[targetID].connections[p] = marble.id;
           }
         });
       }
 
-      return checkWin(marble);
+      if(checkWin(marble)) {
+        winner = marble.color;
+      }
     }
 
     function findConnections(id) {
       return IDHelper.connectionIds(id)
         .map(function(id) {
-          return storage[id] || null;
+          return storage[id] ? id : null;
         });
     }
 
@@ -113,17 +119,19 @@
       var result;
 
       connections.forEach(function(next, direction) {
+        next = storage[next];
         var count = 0;
 
         while (next) {
-          if (next.color === marble.color) {
-            next = next.connections[direction];
+          if (next.taken && next.color === marble.color) {
+            next = storage[next.connections[direction]];
             count++;
           } else {
             break;
           }
         }
 
+        lengths.push(count);
       });
 
       for (var i = 0; i < 4; i++) {
