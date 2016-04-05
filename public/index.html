@@ -23,12 +23,12 @@
   
   <div class="ui-view-container">
     <div ui-view>
-      <div class="loading"></div>
     </div>
   </div>
 
   <script>
-    var socket = io.connect('https://aqueous-island-89621.herokuapp.com');
+    var host = "http://localhost:5000";
+    var socket = io.connect(host);
   </script>
 
 </body>

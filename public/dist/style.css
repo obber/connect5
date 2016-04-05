@@ -483,13 +483,33 @@ body {
 }
 
 .gameover {
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.7);
   color: #fff;
   width: 570px;
   height: 570px;
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.gameover h1 {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.gameover button {
+  position: relative;
+  margin: 50px auto 0 auto;
+  display: block;
+  padding: 25px 20px;
+  border-radius: 4px;
+  border: 0;
+  box-shadow: 0 3px 0 0 #2d2d2d;
+  background-color: #d8d8d8;
+}
+
+.gameover button:hover {
+  background-color: #fff;
 }
 
 .animate-show.ng-hide-add, .animate-show.ng-hide-remove {
@@ -512,6 +532,12 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.loading h1 {
+  text-align: center;
+  position: relative;
+  top: 100px;
 }
 
 /*# sourceMappingURL=style.css.map */

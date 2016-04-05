@@ -7,9 +7,7 @@
 
   app.factory('State', State);
 
-  function State(IDHelper, $rootScope, $state) {
-
-    console.log('when does this run?');
+  function State(IDHelper, $rootScope) {
 
     var storage = generateStorage(); // stores our nodes id:node (key:value) format
     var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
@@ -21,11 +19,9 @@
 
     return {
       storage: storage,
-      slots: slots,
+      getSlots: getSlots,
       getTurn: getTurn,
-      get: get,
       viewStorage: viewStorage,
-      viewSlots: viewSlots,
       addMarble: addMarble,
       player: player,
       getPlayerColor: getPlayerColor
@@ -55,12 +51,12 @@
       });
     }
 
-    function get(id) {
-      return storage[id];
+    function getSlots() {
+      return slots;
     }
 
     function viewStorage() {
-      return storage;
+      console.log(storage);
     }
 
     function viewSlots() {
@@ -93,13 +89,10 @@
 
         var marble = storage[id];
 
-        if (!opponent) {
-          socket.emit('addMarble', marble);
-        }
-
         turn = !turn;
         marble.taken = true;
-        marble.color = color;
+        marble.color = color; 
+
         marble.connections = findConnections(id);
 
         // iterate through marble's connections and add itself as a connectee
@@ -109,6 +102,10 @@
             storage[targetID].connections[p] = marble.id;
           }
         });
+      }
+
+      if (!opponent) {
+        socket.emit('addMarble', marble);
       }
 
       if(checkWin(marble)) {

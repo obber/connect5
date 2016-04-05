@@ -6,11 +6,15 @@
   app.run(onReady);
 
   function routes($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
     $stateProvider
       .state('play', {
         url: "/play",
         templateUrl: "views/play.html"
+      })
+      .state('loading', {
+        url: "/",
+        templateUrl: "views/loading.html"
       });
   }
 
@@ -20,6 +24,11 @@
         $state.go('play');
       }, 1000);
     });
+
+    socket.on('disconnectAll', function() {
+      console.log('disconnecting myself');
+      socket.disconnect();
+    })
   }
 
 })();

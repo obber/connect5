@@ -6,11 +6,15 @@
   app.run(onReady);
 
   function routes($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
     $stateProvider
       .state('play', {
         url: "/play",
         templateUrl: "views/play.html"
+      })
+      .state('loading', {
+        url: "/",
+        templateUrl: "views/loading.html"
       });
   }
 
@@ -20,6 +24,11 @@
         $state.go('play');
       }, 1000);
     });
+
+    socket.on('disconnectAll', function() {
+      console.log('disconnecting myself');
+      socket.disconnect();
+    })
   }
 
 })();
@@ -129,9 +138,7 @@
 
   app.factory('State', State);
 
-  function State(IDHelper, $rootScope, $state) {
-
-    console.log('when does this run?');
+  function State(IDHelper, $rootScope) {
 
     var storage = generateStorage(); // stores our nodes id:node (key:value) format
     var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
@@ -143,11 +150,9 @@
 
     return {
       storage: storage,
-      slots: slots,
+      getSlots: getSlots,
       getTurn: getTurn,
-      get: get,
       viewStorage: viewStorage,
-      viewSlots: viewSlots,
       addMarble: addMarble,
       player: player,
       getPlayerColor: getPlayerColor
@@ -177,12 +182,12 @@
       });
     }
 
-    function get(id) {
-      return storage[id];
+    function getSlots() {
+      return slots;
     }
 
     function viewStorage() {
-      return storage;
+      console.log(storage);
     }
 
     function viewSlots() {
@@ -215,13 +220,10 @@
 
         var marble = storage[id];
 
-        if (!opponent) {
-          socket.emit('addMarble', marble);
-        }
-
         turn = !turn;
         marble.taken = true;
-        marble.color = color;
+        marble.color = color; 
+
         marble.connections = findConnections(id);
 
         // iterate through marble's connections and add itself as a connectee
@@ -231,6 +233,10 @@
             storage[targetID].connections[p] = marble.id;
           }
         });
+      }
+
+      if (!opponent) {
+        socket.emit('addMarble', marble);
       }
 
       if(checkWin(marble)) {
@@ -317,18 +323,22 @@
 
   app.controller('Board', BoardController);
 
-  function BoardController($scope, State) {
+  function BoardController($scope, State, $state) {
 
-    $scope.board = State.slots;
-    $scope.watcher = State.watcher;
-    $scope.gameover = false;
-    $scope.winner;
-    $scope.getTurn = State.getTurn;
-    $scope.getPlayerColor = State.getPlayerColor;
+    init();
+
+    function init() {
+      $scope.board = State.getSlots();
+      $scope.gameover = false;
+      $scope.winner;
+      $scope.getTurn = State.getTurn;
+      $scope.getPlayerColor = State.getPlayerColor;
+      $scope.viewStorage = State.viewStorage;
+    }
     
     $scope.getTurnColor = function() {
       var currentTurn = State.getTurn() ? 'black' : 'white';
-      return State.getPlayerColor() === currentTurn ? 'your' : 'opponent\'s';
+      return State.getPlayerColor() === currentTurn ? 'Your' : 'Opponent\'s';
     }
 
     $scope.add = function(marble) {
@@ -346,14 +356,21 @@
       State.addMarble(marble.id, marble.color);
     }
 
+    $scope.playAgain = function() {
+      socket.emit('rematch');
+      setTimeout(function() {
+        window.location = host;
+      }, 250);
+    }
+
     // broadcast listeners
+    // -------------------
 
     $scope.$on('ready', function() {
       $scope.$apply();
     })
 
     $scope.$on('addMarble', function() {
-      console.log($scope.getPlayerColor());
       $scope.$apply();
     });
 

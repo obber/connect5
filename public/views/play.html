@@ -6,8 +6,10 @@
     blackturn : getTurn() && getPlayerColor() === 'black',
     whiteturn : !getTurn() && getPlayerColor() === 'white'
   }">
+
     <div class="gameover animate-show" ng-show="gameover">
       <h1>Game over! {{winner}} wins!</h1>
+      <button class="play-again" ng-click="playAgain()">Request a rematch.</button>
     </div>
 
     <div ng-repeat="item in board"

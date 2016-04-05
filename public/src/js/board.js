@@ -7,18 +7,22 @@
 
   app.controller('Board', BoardController);
 
-  function BoardController($scope, State) {
+  function BoardController($scope, State, $state) {
 
-    $scope.board = State.slots;
-    $scope.watcher = State.watcher;
-    $scope.gameover = false;
-    $scope.winner;
-    $scope.getTurn = State.getTurn;
-    $scope.getPlayerColor = State.getPlayerColor;
+    init();
+
+    function init() {
+      $scope.board = State.getSlots();
+      $scope.gameover = false;
+      $scope.winner;
+      $scope.getTurn = State.getTurn;
+      $scope.getPlayerColor = State.getPlayerColor;
+      $scope.viewStorage = State.viewStorage;
+    }
     
     $scope.getTurnColor = function() {
       var currentTurn = State.getTurn() ? 'black' : 'white';
-      return State.getPlayerColor() === currentTurn ? 'your' : 'opponent\'s';
+      return State.getPlayerColor() === currentTurn ? 'Your' : 'Opponent\'s';
     }
 
     $scope.add = function(marble) {
@@ -36,14 +40,21 @@
       State.addMarble(marble.id, marble.color);
     }
 
+    $scope.playAgain = function() {
+      socket.emit('rematch');
+      setTimeout(function() {
+        window.location = host;
+      }, 250);
+    }
+
     // broadcast listeners
+    // -------------------
 
     $scope.$on('ready', function() {
       $scope.$apply();
     })
 
     $scope.$on('addMarble', function() {
-      console.log($scope.getPlayerColor());
       $scope.$apply();
     });
 
