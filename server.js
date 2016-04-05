@@ -27,7 +27,7 @@ console.log('app listening on port 3000');
 // ----------------------------------
 
 function limitConnections(req, res, next) {
-  if (users >= 2 && req.url === '/') {
+  if (users > 2 && req.url === '/') {
     res.redirect('inprogress.html');
   } else {
     next();
