@@ -7,7 +7,9 @@
 
   app.factory('State', State);
 
-  function State(IDHelper, $rootScope) {
+  function State(IDHelper, $rootScope, $state) {
+
+    console.log('when does this run?');
 
     var storage = generateStorage(); // stores our nodes id:node (key:value) format
     var slots = generateSlots(); // array of objects: { id: id, taken: true/false, color: black/white }
@@ -32,10 +34,14 @@
     // ----------------------------
 
     function init() {
-      socket.on('ready', function(black) {
+      
+      socket.on('playReady', function(black) {
         player.color = black ? 'black' : 'white';
         $rootScope.$broadcast('ready');
       });
+
+      // playerLoaded emission must be AFTER playReady listener.
+      socket.emit('playerLoaded');
 
       // listen for newMarble event from socket
       socket.on('newMarble', function(marble) {

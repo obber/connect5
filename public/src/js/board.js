@@ -39,7 +39,6 @@
     // broadcast listeners
 
     $scope.$on('ready', function() {
-      console.log('game is ready');
       $scope.$apply();
     })
 
