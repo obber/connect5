@@ -25,18 +25,18 @@
       viewStorage: viewStorage,
       viewSlots: viewSlots,
       addMarble: addMarble,
-      player: player
+      player: player,
+      getPlayerColor: getPlayerColor
     }
 
     // ----------------------------
 
     function init() {
-      socket.on('playerColor', function(black) {
+      socket.on('ready', function(black) {
         player.color = black ? 'black' : 'white';
-        console.log(player.color);
+        $rootScope.$broadcast('ready');
       });
 
-      console.log('initializing State and setting up socket listener 4');
       // listen for newMarble event from socket
       socket.on('newMarble', function(marble) {
         if (!storage[marble.id].taken) {
@@ -70,6 +70,10 @@
       this.color = null;
       this.taken = false;
       this.connections = [null, null, null, null, null, null, null, null];
+    }
+
+    function getPlayerColor() {
+      return player.color;
     }
 
     function addMarble(id, color, opponent) {

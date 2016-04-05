@@ -18,13 +18,21 @@
 </head>
 <body ng-app="app">
 
+  <div class="overlay"></div>
+
   <div ng-controller="Board">
-    <div class="board container" ng-class="{ blackturn : getTurn(), whiteturn : !getTurn() }">
-      <div class="gameover" ng-show="gameover">
+
+    <div>
+      <p>{{getTurnColor()}}</p>
+    </div>
+
+    <div class="board container" ng-class="{
+      blackturn : getTurn() && getPlayerColor() === 'black',
+      whiteturn : !getTurn() && getPlayerColor() === 'white'
+    }">
+      <div class="gameover animate-show" ng-show="gameover">
         <h1>Game over! {{winner}} wins!</h1>
       </div>
-
-      <p>{{player.color}}</p>
 
       <div ng-repeat="item in board"
         class="space"

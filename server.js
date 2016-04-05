@@ -21,7 +21,7 @@ app.get('*', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-  socket.emit('playerColor', black);
+  socket.emit('ready', black);
   black = !black
 
   socket.on('addMarble', function(marble) {

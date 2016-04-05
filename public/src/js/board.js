@@ -14,22 +14,15 @@
     $scope.gameover = false;
     $scope.winner;
     $scope.getTurn = State.getTurn;
-
-    $scope.$on('addMarble', function() {
-      $scope.$apply();
-    });
-
-    $scope.$on('gameover', function(_, marble) {
-      $scope.winner = marble.color;
-      $scope.gameover = true;
-      $scope.$apply();
-    });
+    $scope.getPlayerColor = State.getPlayerColor;
+    
+    $scope.getTurnColor = function() {
+      var currentTurn = State.getTurn() ? 'black' : 'white';
+      return State.getPlayerColor() === currentTurn ? 'your turn!' : 'opponent\'s turn!';
+    }
 
     $scope.add = function(marble) {
       var turnColor = State.getTurn() ? "black" : "white";
-
-      console.log('turnColor = ', turnColor);
-      console.log('State.player.color = ', State.player.color);
 
       if (turnColor !== State.player.color) {
         console.error('its not your turn yet!');
@@ -42,6 +35,24 @@
 
       State.addMarble(marble.id, marble.color);
     }
+
+    // broadcast listeners
+
+    $scope.$on('ready', function() {
+      console.log('game is ready');
+      $scope.$apply();
+    })
+
+    $scope.$on('addMarble', function() {
+      console.log($scope.getPlayerColor());
+      $scope.$apply();
+    });
+
+    $scope.$on('gameover', function(_, marble) {
+      $scope.winner = marble.color;
+      $scope.gameover = true;
+      $scope.$apply();
+    });
 
   }; // Controller End
 
