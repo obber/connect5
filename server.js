@@ -43,8 +43,10 @@ function socketHandler(socket) {
   console.log('a user connected. # of users = ', users);
 
   // fire 'ready' event for client
-  console.log('firing ready!');
-  socket.emit('ready');
+  if (users === 2) {
+    console.log('firing ready!');
+    io.emit('ready');
+  }
 
   // after player is loaded, fire playReady
   socket.on('playerLoaded', function() {
