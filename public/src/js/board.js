@@ -18,7 +18,7 @@
     
     $scope.getTurnColor = function() {
       var currentTurn = State.getTurn() ? 'black' : 'white';
-      return State.getPlayerColor() === currentTurn ? 'your turn!' : 'opponent\'s turn!';
+      return State.getPlayerColor() === currentTurn ? 'your' : 'opponent\'s';
     }
 
     $scope.add = function(marble) {

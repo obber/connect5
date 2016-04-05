@@ -16,6 +16,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: -1;
   background-color: rgba(0,0,0,0.3);
 }
 
@@ -24,7 +25,6 @@ body {
   margin: auto;
   position: relative;
   line-height: 0;
-  border: 30px solid #8C5B3B;
   background-image: url('../images/wood_pattern.png');
 }
 
@@ -84,4 +84,10 @@ body {
 
 .animate-show.ng-hide-add, .animate-show.ng-hide-remove {
   transition: all linear 0.5s;
+}
+
+.turn-label {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #fff;
 }
