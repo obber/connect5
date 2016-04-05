@@ -10,7 +10,7 @@ var users = 0;
 app.use(limitConnections);
 
 // public directory
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 // fallback
 app.get('*', function(req, res) {
